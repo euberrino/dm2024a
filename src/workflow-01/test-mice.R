@@ -26,7 +26,7 @@ impute_columns <-  c(
 data_impute <- sampled_rows[, ..impute_columns]
 
 
-predictor_matrix <- quickpred(sampled_rows, mincor = 0.1, include = names(data_impute))
+predictor_matrix <- quickpred(sampled_rows, mincor = 0.3, include = names(data_impute))
 predictor_matrix[, impute_columns] <- 0
 
 methods <- make.method(sampled_rows)

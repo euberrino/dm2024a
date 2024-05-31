@@ -11,6 +11,7 @@ require("data.table")
 require("yaml")
 require("mice")
 require("lightgbm")
+require("parallel")
 
 #cargo la libreria
 # args <- c( "~/dm2024a" )
@@ -202,76 +203,37 @@ Corregir_MachineLearning <- function(dataset) {
 Corregir_MICE <- function(dataset) {
   cat( "inicio MICE()\n")
   
-  impute_columns <- c(
-    "ctransferencias_recibidas",
-    "mtransferencias_recibidas",
-    "ctarjeta_visa_debitos_automaticos",
-    "mttarjeta_visa_debitos_automaticos",
-    "Visa_mfinanciacion_limite",
-    "mrentabilidad",
-    "mrentabilidad_annual",
-    "mcomisiones",
-    "mpasivos_margen",
-    "mactivos_margen",
-    "ccomisiones_otras",
-    "mcomisiones_otras",
-    "chomebanking_transacciones",
-    "ctarjeta_visa_descuentos",
-    "ctarjeta_master_descuentos",
-    "mtarjeta_visa_descuentos",
-    "mtarjeta_master_descuentos",
-    "ccajeros_propios_descuentos",
-    "mcajeros_propios_descuentos",
-    "cliente_vip",
-    "active_quarter",
-    "mcuentas_saldo",
-    "ctarjeta_debito_transacciones",
-    "mautoservicio",
-    "ctarjeta_visa_transacciones",
-    "mtarjeta_visa_consumo",
-    "ctarjeta_master_transacciones",
-    "mtarjeta_master_consumo",
-    "cextraccion_autoservicio",
-    "mextraccion_autoservicio",
-    "ccheques_depositados",
-    "mcheques_depositados",
-    "ccheques_emitidos",
-    "mcheques_emitidos",
-    "ccheques_depositados_rechazados",
-    "mcheques_depositados_rechazados",
-    "ccheques_emitidos_rechazados",
-    "mcheques_emitidos_rechazados",
-    "tcallcenter",
-    "ccallcenter_transacciones",
-    "thomebanking",
-    "ccajas_transacciones",
-    "ccajas_consultas",
-    "ccajas_depositos",
-    "ccajas_extracciones",
-    "ccajas_otras",
-    "catm_trx",
-    "matm",
-    "catm_trx_other",
-    "matm_other",
+  #Selecciono las variables que voy a imputar, que son una combinacion de las importantes y las que tienen NAs
+  to_impute_variables <- c(
     "ctrx_quarter",
-    "cmobile_app_trx"
+    "mpasivos_margen",
+    "mrentabilidad_annual",
+    "mactivos_margen",
+    "mtransferencias_recibidas",
+    "mtarjeta_visa_consumo",
+    "Visa_mfinanciacion_limite",
+    "chomebanking_transacciones",
+    "mrentabilidad"
   )
-  data_impute <- dataset[, ..impute_columns]
+  #selecciono las variables imputadas
+  data_impute <- dataset[, ..to_impute_columns]
   
-  # Definir la matriz de predictores
-  predictor_matrix <- make.predictorMatrix(dataset)
-  # Opcional: ajustar la matriz de predictores según tus necesidades
-  # En este ejemplo no se eliminan las columnas identificadoras
-  predictor_matrix[, c("foto_mes", "numero_de_cliente")] <- 0
+  # Genero matriz de prediccion
+  predictor_matrix <- quickpred(dataset, mincor = 0.3, include = names(data_impute))
+  # Elimino las predicciones entre variables imputadas
+  predictor_matrix[, to_impute_columns] <- 0
   
-  # Realizar la imputación usando MICE
-  imputed_data <- mice(data_impute, m = 5, method = 'pmm', predictorMatrix = predictor_matrix)
+  methods <- make.method(dataset)
+  methods[to_impute_columns] <- "rf"
+  methods[setdiff(names(dataset), to_impute_columns)] <- ""
+  num_cores <- detectCores() - 1
   
-  # Extraer el dataset completo imputado
+  imputed_data <- mice(dataset, m = 5, method = methods, predictorMatrix = predictor_matrix, 
+                       parallel = "multicore", n.core = num_cores )
   completed_data <- complete(imputed_data)
   
   # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (impute_columns) := completed_data[, impute_columns, with = FALSE]]
+  dataset[, (to_impute_columns) := completed_data[, to_impute_columns]]
   
   
   cat( "fin mice\n")
