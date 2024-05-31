@@ -19,22 +19,22 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 #------------------------------------------------------------------------------
 
 CorregirCampoMes <- function(pcampo, pmeses) {
-
+  
   tbl <- dataset[, list(
     "v1" = shift(get(pcampo), 1, type = "lag"),
     "v2" = shift(get(pcampo), 1, type = "lead")
   ),
   by = eval(envg$PARAM$dataset_metadata$entity_id)
   ]
-
+  
   tbl[, paste0(envg$PARAM$dataset_metadata$entity_id) := NULL]
   tbl[, promedio := rowMeans(tbl, na.rm = TRUE)]
-
+  
   dataset[
     ,
     paste0(pcampo) := ifelse(!(foto_mes %in% pmeses),
-      get(pcampo),
-      tbl$promedio
+                             get(pcampo),
+                             tbl$promedio
     )
   ]
 }
@@ -44,7 +44,7 @@ CorregirCampoMes <- function(pcampo, pmeses) {
 
 Corregir_EstadisticaClasica <- function(dataset) {
   cat( "inicio Corregir_EstadisticaClasica()\n")
-
+  
   CorregirCampoMes("thomebanking", c(201801, 202006))
   CorregirCampoMes("chomebanking_transacciones", c(201801, 201910, 202006))
   CorregirCampoMes("tcallcenter", c(201801, 201806, 202006))
@@ -57,11 +57,11 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("ccajas_depositos", c(201801, 202006))
   CorregirCampoMes("ccajas_extracciones", c(201801, 202006))
   CorregirCampoMes("ccajas_otras", c(201801, 202006))
-
+  
   CorregirCampoMes("ctarjeta_visa_debitos_automaticos", c(201904))
   CorregirCampoMes("mttarjeta_visa_debitos_automaticos", c(201904, 201905))
   CorregirCampoMes("Visa_mfinanciacion_limite", c(201904))
-
+  
   CorregirCampoMes("mrentabilidad", c(201905, 201910, 202006))
   CorregirCampoMes("mrentabilidad_annual", c(201905, 201910, 202006))
   CorregirCampoMes("mcomisiones", c(201905, 201910, 202006))
@@ -69,16 +69,16 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("mactivos_margen", c(201905, 201910, 202006))
   CorregirCampoMes("ccomisiones_otras", c(201905, 201910, 202006))
   CorregirCampoMes("mcomisiones_otras", c(201905, 201910, 202006))
-
+  
   CorregirCampoMes("ctarjeta_visa_descuentos", c(201910))
   CorregirCampoMes("ctarjeta_master_descuentos", c(201910))
   CorregirCampoMes("mtarjeta_visa_descuentos", c(201910))
   CorregirCampoMes("mtarjeta_master_descuentos", c(201910))
   CorregirCampoMes("ccajeros_propios_descuentos", c(201910))
   CorregirCampoMes("mcajeros_propios_descuentos", c(201910))
-
+  
   CorregirCampoMes("cliente_vip", c(201911))
-
+  
   CorregirCampoMes("active_quarter", c(202006))
   CorregirCampoMes("mcuentas_saldo", c(202006))
   CorregirCampoMes("ctarjeta_debito_transacciones", c(202006))
@@ -100,7 +100,7 @@ Corregir_EstadisticaClasica <- function(dataset) {
   CorregirCampoMes("catm_trx_other", c(202006))
   CorregirCampoMes("matm_other", c(202006))
   CorregirCampoMes("cmobile_app_trx", c(202006))
-
+  
   cat( "fin Corregir_EstadisticaClasica()\n")
 }
 #------------------------------------------------------------------------------
@@ -109,22 +109,22 @@ Corregir_MachineLearning <- function(dataset) {
   gc()
   cat( "inicio Corregir_MachineLearning()\n")
   # acomodo los errores del dataset
-
+  
   dataset[foto_mes == 201901, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201901, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201902, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201902, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201903, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201903, mtransferencias_recibidas := NA]
-
+  
   dataset[foto_mes == 201904, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201904, mtransferencias_recibidas := NA]
   dataset[foto_mes == 201904, ctarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201904, mttarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201904, Visa_mfinanciacion_limite := NA]
-
+  
   dataset[foto_mes == 201905, ctransferencias_recibidas := NA]
   dataset[foto_mes == 201905, mtransferencias_recibidas := NA]
   dataset[foto_mes == 201905, mrentabilidad := NA]
@@ -135,7 +135,7 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 201905, ctarjeta_visa_debitos_automaticos := NA]
   dataset[foto_mes == 201905, ccomisiones_otras := NA]
   dataset[foto_mes == 201905, mcomisiones_otras := NA]
-
+  
   dataset[foto_mes == 201910, mpasivos_margen := NA]
   dataset[foto_mes == 201910, mactivos_margen := NA]
   dataset[foto_mes == 201910, ccomisiones_otras := NA]
@@ -150,9 +150,9 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 201910, mtarjeta_master_descuentos := NA]
   dataset[foto_mes == 201910, ccajeros_propios_descuentos := NA]
   dataset[foto_mes == 201910, mcajeros_propios_descuentos := NA]
-
+  
   dataset[foto_mes == 202001, cliente_vip := NA]
-
+  
   dataset[foto_mes == 202006, active_quarter := NA]
   dataset[foto_mes == 202006, mrentabilidad := NA]
   dataset[foto_mes == 202006, mrentabilidad_annual := NA]
@@ -193,71 +193,87 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 202006, matm_other := NA]
   dataset[foto_mes == 202006, ctrx_quarter := NA]
   dataset[foto_mes == 202006, cmobile_app_trx := NA]
-
+  
   cat( "fin Corregir_MachineLearning()\n")
 }
 #------------------------------------
 # Metodo de imputacion MICE
 
-Corregir_MICE <- funcion(dataset){
+Corregir_MICE <- function(dataset) {
   cat( "inicio MICE()\n")
   
   impute_columns <- c(
-      "ctransferencias_recibidas",
-      "mtransferencias_recibidas",
-      "ctarjeta_visa_debitos_automaticos",
-      "mttarjeta_visa_debitos_automaticos",
-      "Visa_mfinanciacion_limite",
-      "mrentabilidad",
-      "mrentabilidad_annual",
-      "mcomisiones",
-      "mpasivos_margen",
-      "mactivos_margen",
-      "ccomisiones_otras",
-      "mcomisiones_otras",
-      "chomebanking_transacciones",
-      "ctarjeta_visa_descuentos",
-      "ctarjeta_master_descuentos",
-      "mtarjeta_visa_descuentos",
-      "mtarjeta_master_descuentos",
-      "ccajeros_propios_descuentos",
-      "mcajeros_propios_descuentos",
-      "cliente_vip",
-      "active_quarter",
-      "mcuentas_saldo",
-      "ctarjeta_debito_transacciones",
-      "mautoservicio",
-      "ctarjeta_visa_transacciones",
-      "mtarjeta_visa_consumo",
-      "ctarjeta_master_transacciones",
-      "mtarjeta_master_consumo",
-      "cextraccion_autoservicio",
-      "mextraccion_autoservicio",
-      "ccheques_depositados",
-      "mcheques_depositados",
-      "ccheques_emitidos",
-      "mcheques_emitidos",
-      "ccheques_depositados_rechazados",
-      "mcheques_depositados_rechazados",
-      "ccheques_emitidos_rechazados",
-      "mcheques_emitidos_rechazados",
-      "tcallcenter",
-      "ccallcenter_transacciones",
-      "thomebanking",
-      "ccajas_transacciones",
-      "ccajas_consultas",
-      "ccajas_depositos",
-      "ccajas_extracciones",
-      "ccajas_otras",
-      "catm_trx",
-      "matm",
-      "catm_trx_other",
-      "matm_other",
-      "ctrx_quarter",
-      "cmobile_app_trx"
-    )
+    "ctransferencias_recibidas",
+    "mtransferencias_recibidas",
+    "ctarjeta_visa_debitos_automaticos",
+    "mttarjeta_visa_debitos_automaticos",
+    "Visa_mfinanciacion_limite",
+    "mrentabilidad",
+    "mrentabilidad_annual",
+    "mcomisiones",
+    "mpasivos_margen",
+    "mactivos_margen",
+    "ccomisiones_otras",
+    "mcomisiones_otras",
+    "chomebanking_transacciones",
+    "ctarjeta_visa_descuentos",
+    "ctarjeta_master_descuentos",
+    "mtarjeta_visa_descuentos",
+    "mtarjeta_master_descuentos",
+    "ccajeros_propios_descuentos",
+    "mcajeros_propios_descuentos",
+    "cliente_vip",
+    "active_quarter",
+    "mcuentas_saldo",
+    "ctarjeta_debito_transacciones",
+    "mautoservicio",
+    "ctarjeta_visa_transacciones",
+    "mtarjeta_visa_consumo",
+    "ctarjeta_master_transacciones",
+    "mtarjeta_master_consumo",
+    "cextraccion_autoservicio",
+    "mextraccion_autoservicio",
+    "ccheques_depositados",
+    "mcheques_depositados",
+    "ccheques_emitidos",
+    "mcheques_emitidos",
+    "ccheques_depositados_rechazados",
+    "mcheques_depositados_rechazados",
+    "ccheques_emitidos_rechazados",
+    "mcheques_emitidos_rechazados",
+    "tcallcenter",
+    "ccallcenter_transacciones",
+    "thomebanking",
+    "ccajas_transacciones",
+    "ccajas_consultas",
+    "ccajas_depositos",
+    "ccajas_extracciones",
+    "ccajas_otras",
+    "catm_trx",
+    "matm",
+    "catm_trx_other",
+    "matm_other",
+    "ctrx_quarter",
+    "cmobile_app_trx"
+  )
+  data_impute <- dataset[, ..variables_imputar]
   
-
+  # Definir la matriz de predictores
+  predictor_matrix <- make.predictorMatrix(data_impute)
+  # Opcional: ajustar la matriz de predictores según tus necesidades
+  # En este ejemplo no se eliminan las columnas identificadoras
+  #predictor_matrix[, c("id", "date")] <- 0
+  
+  # Realizar la imputación usando MICE
+  imputed_data <- mice(data_impute, m = 5, method = 'pmm', predictorMatrix = predictor_matrix)
+  
+  # Extraer el dataset completo imputado
+  completed_data <- complete(imputed_data)
+  
+  # Reemplazar las columnas imputadas en el data.table original
+  dataset[, (variables_imputar) := completed_data[, variables_imputar, with = FALSE]]
+  
+  
   imputed_data <- mice(
     dataset[, ..impute_columns],
     m = 5,
@@ -292,7 +308,11 @@ dataset <- fread(envg$PARAM$dataset)
 cat( "Finalizada lectura del dataset\n" )
 
 # tmobile_app se daño a partir de 202010
-dataset[, tmobile_app := NULL]
+
+if ("tmobile_app" %in% names(dataset)){
+  dataset[, tmobile_app := NULL]
+}
+
 
 
 GrabarOutput()
@@ -302,9 +322,10 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 
 # corrijo los  < foto_mes, campo >  que fueron pisados con cero
 switch( envg$PARAM$metodo,
-  "MachineLearning"     = Corregir_MachineLearning(dataset),
-  "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
-  "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
+        "MachineLearning"     = Corregir_MachineLearning(dataset),
+        "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
+        "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
+        "MICE"                = Corregir_MICE(dataset)
 )
 
 
@@ -313,16 +334,16 @@ switch( envg$PARAM$metodo,
 cat( "grabado del dataset\n")
 cat( "Iniciando grabado del dataset\n" )
 fwrite(dataset,
-  file = "dataset.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 cat( "Finalizado grabado del dataset\n" )
 
 # copia la metadata sin modificar
 cat( "grabado metadata\n")
 write_yaml( envg$PARAM$dataset_metadata, 
-  file="dataset_metadata.yml" )
+            file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
 
@@ -340,8 +361,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset.campos.txt",
-  sep = "\t"
+       file = "dataset.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------
