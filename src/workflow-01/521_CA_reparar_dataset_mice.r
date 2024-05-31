@@ -256,13 +256,13 @@ Corregir_MICE <- function(dataset) {
     "ctrx_quarter",
     "cmobile_app_trx"
   )
-  data_impute <- dataset[, ..variables_imputar]
+  data_impute <- dataset[, ..impute_columns]
   
   # Definir la matriz de predictores
-  predictor_matrix <- make.predictorMatrix(data_impute)
+  predictor_matrix <- make.predictorMatrix(dataset)
   # Opcional: ajustar la matriz de predictores según tus necesidades
   # En este ejemplo no se eliminan las columnas identificadoras
-  #predictor_matrix[, c("id", "date")] <- 0
+  predictor_matrix[, c("foto_mes", "numero_de_cliente")] <- 0
   
   # Realizar la imputación usando MICE
   imputed_data <- mice(data_impute, m = 5, method = 'pmm', predictorMatrix = predictor_matrix)
@@ -271,21 +271,8 @@ Corregir_MICE <- function(dataset) {
   completed_data <- complete(imputed_data)
   
   # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (variables_imputar) := completed_data[, variables_imputar, with = FALSE]]
+  dataset[, (impute_columns) := completed_data[, impute_columns, with = FALSE]]
   
-  
-  imputed_data <- mice(
-    dataset[, ..impute_columns],
-    m = 5,
-    method = 'pmm',
-    predictorMatrix = predictor_matrix,
-    visitSequence = 'monotone'
-  )
-  # Extraer el dataset completo imputado
-  completed_data <- complete(imputed_data)
-  
-  # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (impute_columns) := completed_data]
   
   cat( "fin mice\n")
 }
