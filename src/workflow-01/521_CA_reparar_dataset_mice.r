@@ -216,7 +216,7 @@ Corregir_MICE <- function(dataset) {
     "mrentabilidad"
   )
   #selecciono las variables imputadas
-  data_impute <- dataset[, ..to_impute_columns]
+  data_impute <- dataset[, ..to_impute_variables]
   
   num_cores <- detectCores() - 1
   
@@ -227,7 +227,7 @@ Corregir_MICE <- function(dataset) {
     #predictor_matrix[, to_impute_columns] <- 0
     
     methods <- make.method(dataset)
-    methods[to_impute_columns] <- "rf"
+    methods[to_impute_variables] <- "rf"
     methods[setdiff(names(dataset), to_impute_columns)] <- ""
     
     
