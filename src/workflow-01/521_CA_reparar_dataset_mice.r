@@ -216,24 +216,59 @@ Corregir_MICE <- function(dataset) {
     "mrentabilidad"
   )
   #selecciono las variables imputadas
-  data_impute <- dataset[, ..to_impute_variables]
+  data_impute <- dataset[, ..to_impute_columns]
   
-  # Genero matriz de prediccion
-  predictor_matrix <- quickpred(dataset, mincor = 0.3, include = names(data_impute))
-  # Elimino las predicciones entre variables imputadas
-  predictor_matrix[, to_impute_variables] <- 0
-  
-  methods <- make.method(dataset)
-  methods[to_impute_variables] <- "rf"
-  methods[setdiff(names(dataset), to_impute_variables)] <- ""
   num_cores <- detectCores() - 1
   
-  imputed_data <- mice(dataset, m = 5, method = methods, predictorMatrix = predictor_matrix, 
-                       parallel = "multicore", n.core = num_cores )
-  completed_data <- complete(imputed_data)
+  if (!file.exists("mice.RDATA")) {
+    # Genero matriz de prediccion
+    predictor_matrix <- quickpred(dataset, mincor = 0.3, include = names(data_impute), exclude = c("tmobile_app"))
+    # Elimino las predicciones entre variables imputadas
+    #predictor_matrix[, to_impute_columns] <- 0
+    
+    methods <- make.method(dataset)
+    methods[to_impute_columns] <- "rf"
+    methods[setdiff(names(dataset), to_impute_columns)] <- ""
+    
+    
+    imputed_data <- mice(dataset, m = 3, method = methods, predictorMatrix = predictor_matrix, 
+                       parallel = "multicore",maxit=1, n.core = num_cores )
+    iter = 1
+    save(imputed_data,iter,file="mice.RDATA")
+    completed_data <- complete(imputed_data)
+    print(paste0("saved iter",str(iter)))
+    cat( "grabado del dataset\n")
+    cat( "Iniciando grabado del dataset\n" )
+    fwrite(completed_data,
+           file = paste0("impute_cols",str(iter),".csv.gz"),
+           logical01 = TRUE,
+           sep = ","
+    )
+    cat( "Finalizado grabado del dataset\n" )
+    
+  } else {
+    load("mice.RDATA")
+    print("Checkpoint encontrado, reanudando la imputación.")
+  }
+  while(iter< 6){
+    imputed_data = mice.mids(imputed_data, parallel = "multicore",maxit=1, n.core = num_cores )
+    iter = iter + 1
+    save(imputed_data,iter,file="mice.RDATA")
+    completed_data <- complete(imputed_data)
+    print(paste0("saved iter",str(iter)))
+    cat( "grabado del dataset\n")
+    cat( "Iniciando grabado del dataset\n" )
+    fwrite(completed_data,
+           file = paste0("impute_cols",str(iter),".csv.gz"),
+           logical01 = TRUE,
+           sep = ","
+    )
+    cat( "Finalizado grabado del dataset\n" )
+  }
+  
   
   # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (to_impute_variables) := completed_data[, to_impute_variables]]
+  dataset[, (to_impute_columns) := completed_data[, to_impute_columns]]
   
   
   cat( "fin mice\n")
