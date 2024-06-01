@@ -218,7 +218,7 @@ Corregir_MICE <- function(dataset) {
   #methods <- make.method(dataset)
   #methods[to_impute_variables] <- "pmm"
   #methods[setdiff(names(dataset), to_impute_variables)] <- ""
-  imputed_data <- mice(dataset[to_impute_variables], m = 5, method = methods)
+  imputed_data <- mice(dataset[to_impute_variables], m = 5, method = 'ppm')
   # #selecciono las variables imputadas
   # data_impute <- dataset[, ..to_impute_columns]
   # 
@@ -258,7 +258,7 @@ Corregir_MICE <- function(dataset) {
   #   imputed_data = mice.mids(imputed_data, parallel = "multicore",maxit=1, n.core = num_cores )
   #   iter = iter + 1
   #   save(imputed_data,iter,file="mice.RDATA")
-  #   completed_data <- complete(imputed_data)
+  completed_data <- complete(imputed_data)
   #   print(paste0("saved iter",str(iter)))
   #   cat( "grabado del dataset\n")
   #   cat( "Iniciando grabado del dataset\n" )
@@ -268,7 +268,7 @@ Corregir_MICE <- function(dataset) {
   #          sep = ","
   #   )
   #   cat( "Finalizado grabado del dataset\n" )
-  }
+  #}
   
   
   # Reemplazar las columnas imputadas en el data.table original
