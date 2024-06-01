@@ -268,7 +268,7 @@ Corregir_MICE <- function(dataset) {
   
   
   # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (to_impute_columns) := completed_data[, to_impute_columns]]
+  dataset[, (to_impute_variables) := completed_data[, to_impute_variables]]
   
   
   cat( "fin mice\n")
