@@ -216,16 +216,16 @@ Corregir_MICE <- function(dataset) {
     "mrentabilidad"
   )
   #selecciono las variables imputadas
-  data_impute <- dataset[, ..to_impute_columns]
+  data_impute <- dataset[, ..to_impute_variables]
   
   # Genero matriz de prediccion
   predictor_matrix <- quickpred(dataset, mincor = 0.3, include = names(data_impute))
   # Elimino las predicciones entre variables imputadas
-  predictor_matrix[, to_impute_columns] <- 0
+  predictor_matrix[, to_impute_variables] <- 0
   
   methods <- make.method(dataset)
-  methods[to_impute_columns] <- "rf"
-  methods[setdiff(names(dataset), to_impute_columns)] <- ""
+  methods[to_impute_variables] <- "rf"
+  methods[setdiff(names(dataset), to_impute_variables)] <- ""
   num_cores <- detectCores() - 1
   
   imputed_data <- mice(dataset, m = 5, method = methods, predictorMatrix = predictor_matrix, 
@@ -233,7 +233,7 @@ Corregir_MICE <- function(dataset) {
   completed_data <- complete(imputed_data)
   
   # Reemplazar las columnas imputadas en el data.table original
-  dataset[, (to_impute_columns) := completed_data[, to_impute_columns]]
+  dataset[, (to_impute_variables) := completed_data[, to_impute_variables]]
   
   
   cat( "fin mice\n")
