@@ -346,33 +346,35 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 ZZ_final_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-
+  
   param_local$meta$script <- "/src/workflow-01/z591_ZZ_final.r"
-
+  
   # Que modelos quiero, segun su posicion en el ranking de la Bayesian Optimizacion, ordenado por metrica descendente
   param_local$modelos_rank <- c(1)
   param_local$metrica_order <- -1  # ordeno por el campo metrica en forma DESCENDENTE
   
   # Que modelos quiero, segun su iteracion_bayesiana de la Bayesian Optimizacion, SIN ordenar
   param_local$modelos_iteracion <- c()
-
+  
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
-
+  
   param_local$kaggle$envios_desde <-  8000L
   param_local$kaggle$envios_hasta <- 14000L
   param_local$kaggle$envios_salto <-   500L
   param_local$kaggle$competition <- "itba-data-mining-2024-a"
-
-
+  param_local$kaggle$rango_submit <-  6:10
+  
+  
   # default 5 semillas
-  param_local$qsemillas <- 5
-
+  param_local$qsemillas <- 10
+  
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
