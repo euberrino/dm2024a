@@ -218,7 +218,7 @@ Corregir_MICE <- function(dataset) {
   #methods <- make.method(dataset)
   #methods[to_impute_variables] <- "pmm"
   #methods[setdiff(names(dataset), to_impute_variables)] <- ""
-  imputed_data <- mice(dataset[to_impute_variables], m = 5, method = 'ppm')
+  imputed_data <- mice(dataset[, ..to_impute_variables], m = 5, method = 'pmm')
   # #selecciono las variables imputadas
   # data_impute <- dataset[, ..to_impute_columns]
   # 

@@ -228,7 +228,7 @@ Corregir_MICE <- function(dataset) {
     
     methods <- make.method(dataset)
     methods[to_impute_variables] <- "rf"
-    methods[setdiff(names(dataset), to_impute_columns)] <- ""
+    methods[setdiff(names(dataset), to_impute_variables)] <- ""
     
     
     imputed_data <- mice(dataset, m = 3, method = methods, predictorMatrix = predictor_matrix, 
