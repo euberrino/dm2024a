@@ -76,7 +76,7 @@ CA_catastrophe_base <- function( pinputexps, metodo )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
-  param_local$meta$script <- "/src/workflow-01/z521_CA_reparar_dataset_M1.r"
+  param_local$meta$script <- "/src/workflow-01/521_CA_reparar_dataset_M1.r"
 
   # Opciones MachineLearning EstadisticaClasica Ninguno
   param_local$metodo <- metodo
@@ -93,7 +93,7 @@ FEintra_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/workflow-01/z531_FE_intrames.r"
+  param_local$meta$script <- "/src/workflow-01/531_FE_intrames.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -463,7 +463,7 @@ wf_semillerio9 <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   CA_catastrophe_base( metodo="MICE")
   FEintra_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="ninguno")
   FEhist_base()
   FErf_attributes_base()
   CN_canaritos_asesinos_base(ratio=0.9, desvio=0)
