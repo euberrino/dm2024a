@@ -276,6 +276,27 @@ if (envg$PARAM$lag3) {
   cat( "Fin lag3\n")
 }
 
+cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
+if (envg$PARAM$lag3) {
+  cat( "Inicio lag3\n")
+  # creo los campos lags de orden 3
+  envg$OUTPUT$lag3$ncol_antes <- ncol(dataset)
+  dataset[, paste0(cols_lagueables, "_lag3") := shift(.SD, 3, NA, "lag"),
+          by = eval(envg$PARAM$dataset_metadata$entity_id),
+          .SDcols = cols_lagueables
+  ]
+  
+  # agrego los delta lags de orden 6
+  for (vcol in cols_lagueables)
+  {
+    dataset[, paste0(vcol, "_delta6") := get(vcol) - get(paste0(vcol, "_lag6"))]
+  }
+  
+  envg$OUTPUT$lag6$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+  cat( "Fin lag6\n")
+}
+
 
 #--------------------------------------
 # agrego las tendencias
