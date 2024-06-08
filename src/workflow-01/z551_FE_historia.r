@@ -277,11 +277,11 @@ if (envg$PARAM$lag3) {
 }
 
 cols_lagueables <- intersect(cols_lagueables, colnames(dataset))
-if (envg$PARAM$lag3) {
-  cat( "Inicio lag3\n")
-  # creo los campos lags de orden 3
-  envg$OUTPUT$lag3$ncol_antes <- ncol(dataset)
-  dataset[, paste0(cols_lagueables, "_lag3") := shift(.SD, 3, NA, "lag"),
+if (envg$PARAM$lag6) {
+  cat( "Inicio lag6\n")
+  # creo los campos lags de orden 6
+  envg$OUTPUT$lag6$ncol_antes <- ncol(dataset)
+  dataset[, paste0(cols_lagueables, "_lag6") := shift(.SD, 6, NA, "lag"),
           by = eval(envg$PARAM$dataset_metadata$entity_id),
           .SDcols = cols_lagueables
   ]
