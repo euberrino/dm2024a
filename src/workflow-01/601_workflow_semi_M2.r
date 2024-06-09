@@ -335,7 +335,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
