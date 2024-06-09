@@ -287,7 +287,7 @@ TS_strategy_base9 <- function( pinputexps )
 
 
   param_local$future <- c(202109)
-  param_local$train$training <- c(201901, 201902, 201903, 201904, 201905, 201906,
+  param_local$final_train <- c(201901, 201902, 201903, 201904, 201905, 201906,
                                   201907, 201908, 201909, 201910, 201911, 201912,
                                   202001, 202002, 202101, 202102, 202103, 202104,
                                   202105, 202106, 202107)
@@ -333,7 +333,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
